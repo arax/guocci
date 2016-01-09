@@ -13,4 +13,8 @@
 //= require jquery
 //= require jquery_ujs
 //= require angular/angular
+//= require angular-aria/angular-aria
+//= require angular-animate/angular-animate
+//= require angular-messages/angular-messages
+//= require angular-material/angular-material
 //= require_tree .

@@ -23,6 +23,10 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 # asset management
 gem 'bower-rails'
 
+# App dependencies
+gem 'occi-api'
+gem 'httparty'
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
