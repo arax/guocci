@@ -1,14 +1,26 @@
-<div ng-controller="DemoCtrl" layout="column" ng-cloak class="md-inline-form">
+<div ng-controller="HomeController" layout="column" ng-cloak class="md-inline-form">
   <md-content md-theme="docs-dark" layout-gt-sm="row" layout-padding>
     <div>
-      <h1 ng-if="name">Hello, {{name}}</h1>
+      <h1 ng-if="name">Launching "{{name}}"</h1>
+      <h1 ng-if="selected_site">on "{{selected_site.trim()}}"</h1>
     </div>
   </md-content>
   <md-content layout-padding>
     <div>
       <md-input-container>
-        <label>Title</label>
-        <input ng-model="name" autofocus placeholder="Enter your name">
+        <label>Name</label>
+        <input ng-model="name" placeholder="Enter a name">
+        <md-button class="md-icon-button md-primary" aria-label="Refresh" ng-click="generate_name()">
+          <ng-md-icon icon="cached" style="fill: green"></ng-md-icon>
+        </md-button>
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm>
+        <label>Site</label>
+        <md-select ng-model="selected_site" autofocus>
+          <md-option ng-repeat="site in sites track by site.id" value="{{site.id}}" required>
+            {{site.name}}
+          </md-option>
+        </md-select>
       </md-input-container>
     </div>
   </md-content>

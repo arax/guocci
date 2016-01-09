@@ -17,4 +17,5 @@
 //= require angular-animate/angular-animate
 //= require angular-messages/angular-messages
 //= require angular-material/angular-material
+//= require angular-material-icons/angular-material-icons
 //= require_tree .

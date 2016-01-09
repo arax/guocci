@@ -12,5 +12,6 @@
  *
  *= require_tree .
  *= require angular-material/angular-material
+ *= require angular-material-icons/angular-material-icons
  *= require_self
  */

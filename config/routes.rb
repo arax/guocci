@@ -1,6 +1,17 @@
 Rails.application.routes.draw do
-  get  'home/index'
-  root 'home#index'
+  get    'home'            => 'home#index'
+
+  get    'sites'           => 'sites#index'
+  get    'sites/:name'     => 'sites#show'
+
+  get    'instances'       => 'instances#index'
+  post   'instances'       => 'instances#create'
+  get    'instances/:id'   => 'instances#show'
+  delete 'instances/:id'   => 'instances#destroy'
+
+  get    'haikunator'      => 'haikunator#show'
+
+  root   'home#index'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

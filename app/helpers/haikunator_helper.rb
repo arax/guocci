@@ -1,0 +1,2 @@
+module HaikunatorHelper
+end
