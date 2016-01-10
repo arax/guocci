@@ -34,7 +34,7 @@
           <label>Appliance</label>
           <md-select ng-model="selected_appliance" autofocus>
             <md-option ng-repeat="appliance in site_data.appliances track by appliance.id" value="{{appliance.id}}" required>
-              {{appliance.name}}
+              {{appliance.name}} (<strong>{{appliance.vo}}</strong>)
             </md-option>
           </md-select>
         </md-input-container>
@@ -46,16 +46,38 @@
             </md-option>
           </md-select>
         </md-input-container>
+        <div ng-if="selected_appliance && selected_size">
+          <md-input-container flex-gt-sm>
+            <md-button class="md-raised md-primary" ng-click="create_instance(name, site_data.id, site_data.endpoint, selected_appliance, selected_size);refresh_instances(site_data);generate_name()">Create</md-button>
+          </md-input-container>
+        </div>
       </div>
     </md-content>
     <md-content layout="column" layout-padding>
       <div ng-if="instances">
-        <h2>Instances</h2>
+        <div layout="row">
+          <h2>Instances</h2>
+          <div>
+            <md-button class="md-icon-button" aria-label="Refresh" ng-click="refresh_instances(site_data)">
+              <ng-md-icon icon="cached" style="fill: #3F51B5" size="25"></ng-md-icon>
+            </md-button>
+          </div>
+        </div>
         <md-list>
           <md-list-item class="md-3-line" ng-repeat="instance in instances">
             <ng-md-icon icon="computer" style="fill: #3F51B5" class="md-avatar" alt="{{instance.name}}" size="50"></ng-md-icon>
-            <div class="md-list-item-text" layout="column">
-              <p>({{instance.id}}) {{ instance.name }}</p>
+            <div class="md-list-item-text" layout="row">
+              <div layout="column" flex>
+                <div flex>Name:    "{{ instance.name }}"</div>
+                <!-- <div flex>ID:      {{site_data.endpoint + instance.id}}</div> -->
+                <div flex>State:   {{instance.state}}</div>
+                <div flex>Address: {{instance.ip}}</div>
+              </div>
+              <div ng-if="instance.state == 'active'">
+                <md-input-container>
+                  <md-button class="md-raised md-primary" ng-click="delete_instance(instance.id, site_data.id, site_data.endpoint);refresh_instances(site_data)">Delete</md-button>
+                </md-input-container>
+              </div>
             </div>
           </md-list-item>
         </md-list>
