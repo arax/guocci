@@ -32,10 +32,10 @@ guocci.controller(
       )
       $scope.retrieve_sites()
 
-      $scope.create_instance = (name, site_id, endpoint, appliance, size) ->
+      $scope.create_instance = (name, site_id, endpoint, appliance, size, sshkey) ->
         $http.post(
           '/instances/' + site_id + '/new.json',
-          { 'name': name, 'endpoint': endpoint, 'appliance': appliance, 'size': size }
+          { 'name': name, 'endpoint': endpoint, 'appliance': appliance, 'size': size, 'sshkey': sshkey }
         ).then(
           (response) -> $log.info('Created instance ' + response.data.id)
           (response) ->

@@ -30,6 +30,12 @@
             </div>
           </div>
         </md-input-container>
+        <md-input-container flex-gt-sm>
+          <label>SSH Key</label>
+          <div flex>
+            <input ng-model="sshkey" placeholder="Enter a key" required>
+          </div>
+        </md-input-container>
         <md-input-container class="md-block" flex-gt-sm>
           <label>Appliance</label>
           <md-select ng-model="selected_appliance" autofocus>
@@ -46,9 +52,9 @@
             </md-option>
           </md-select>
         </md-input-container>
-        <div ng-if="selected_appliance && selected_size">
+        <div ng-if="selected_appliance && selected_size && sshkey && name">
           <md-input-container flex-gt-sm>
-            <md-button class="md-raised md-primary" ng-click="create_instance(name, site_data.id, site_data.endpoint, selected_appliance, selected_size);refresh_instances(site_data);generate_name()">Create</md-button>
+            <md-button class="md-raised md-primary" ng-click="create_instance(name, site_data.id, site_data.endpoint, selected_appliance, selected_size, sshkey);refresh_instances(site_data);generate_name()">Create</md-button>
           </md-input-container>
         </div>
       </div>

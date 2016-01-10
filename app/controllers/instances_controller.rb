@@ -19,8 +19,11 @@ class InstancesController < ApplicationController
 
   def create
     compute = client(params[:endpoint]).get_resource(Occi::Infrastructure::Compute.new.kind.type_identifier)
+    compute.mixins << params[:size] << params[:appliance] << context_mixin
     compute.title = compute.hostname = params[:name]
-    compute.mixins << params[:size] << params[:appliance]
+    compute.attributes['org.openstack.credentials.publickey.name'] = 'Public SSH key'
+    compute.attributes['org.openstack.credentials.publickey.data'] = params[:sshkey].strip
+
     compute_id = client(params[:endpoint]).create compute
 
     respond_with({ id: compute_id }, location: "/instances/#{params[:site_id]}/new")
@@ -64,5 +67,18 @@ class InstancesController < ApplicationController
       end
     end
     lnks.first ? lnks.first.address : 'unknown'
+  end
+
+  def context_mixin
+    mxn_attrs = Occi::Core::Attributes.new
+    mxn_attrs['org.openstack.credentials.publickey.name'] = {}
+    mxn_attrs['org.openstack.credentials.publickey.data'] = {}
+
+    Occi::Core::Mixin.new(
+      'http://schemas.openstack.org/instance/credentials#',
+      'public_key',
+      'OS contextualization mixin',
+      mxn_attrs
+    )
   end
 end
