@@ -26,8 +26,8 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'bower-rails'
 
 # App dependencies
-gem 'occi-api'
-gem 'httparty'
+gem 'occi-api', '~> 4.3.5'
+gem 'httparty', '~> 0.13.7'
 gem 'haikunator'
 
 # Use ActiveModel has_secure_password

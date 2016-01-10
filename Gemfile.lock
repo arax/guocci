@@ -80,7 +80,7 @@ GEM
     multi_xml (0.5.5)
     nokogiri (1.6.7.1)
       mini_portile2 (~> 2.0.0.rc2)
-    occi-api (4.3.4)
+    occi-api (4.3.5)
       httparty (~> 0.13, >= 0.13.1)
       json (~> 1.8, >= 1.8.1)
       occi-core (~> 4.3, >= 4.3.2)
@@ -165,10 +165,10 @@ DEPENDENCIES
   byebug
   coffee-rails (~> 4.1.0)
   haikunator
-  httparty
+  httparty (~> 0.13.7)
   jbuilder (~> 2.0)
   jquery-rails
-  occi-api
+  occi-api (~> 4.3.5)
   rails (= 4.2.5)
   responders (~> 2.0)
   sass-rails (~> 5.0)
