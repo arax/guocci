@@ -3,7 +3,7 @@
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
 guocci = angular.module('guocci', [ 'ngMaterial', 'ngMdIcons' ])
-guocci.config( ($mdThemingProvider) -> $mdThemingProvider.theme('docs-dark', 'default').primaryPalette('yellow').dark() )
+guocci.config( ($mdThemingProvider) -> $mdThemingProvider.theme('docs-dark', 'default').primaryPalette('indigo').dark() )
 
 guocci.controller(
   'HomeController',
@@ -26,5 +26,25 @@ guocci.controller(
         (response) -> $log.error(response)
       )
       $scope.retrieve_sites()
+
+      $scope.$watch(
+        'selected_site',
+        (newSite, oldSite) ->
+          return if !newSite
+          $http.get('/sites/' + newSite + '.json').then(
+            (response) -> $scope.site_data = response.data.site,
+            (response) -> $log.error(response)
+          )
+      )
+
+      $scope.$watch(
+        'site_data',
+        (newSiteData, oldSiteData) ->
+          return if !newSiteData || !newSiteData.id
+          $http.get('/instances/' + newSiteData.id + '.json').then(
+            (response) -> $scope.instances = response.data.instances,
+            (response) -> $log.error(response)
+          )
+      )
   ]
 )

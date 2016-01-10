@@ -1,19 +1,12 @@
 <div ng-controller="HomeController" layout="column" ng-cloak class="md-inline-form">
-  <md-content md-theme="docs-dark" layout-gt-sm="row" layout-padding>
-    <div>
-      <h1 ng-if="name">Launching "{{name}}"</h1>
-      <h1 ng-if="selected_site">on "{{selected_site.trim()}}"</h1>
-    </div>
-  </md-content>
-  <md-content layout-padding>
-    <div>
-      <md-input-container>
-        <label>Name</label>
-        <input ng-model="name" placeholder="Enter a name">
-        <md-button class="md-icon-button md-primary" aria-label="Refresh" ng-click="generate_name()">
-          <ng-md-icon icon="cached" style="fill: green"></ng-md-icon>
-        </md-button>
-      </md-input-container>
+  <div flex>
+  <md-toolbar md-theme="docs-dark" layout="row" layout-padding>
+    <h1>GUOCCI <span ng-if="site_data.name">@ {{site_data.name}} <span ng-if="site_data.country">({{site_data.country}})</span></span></h1>
+  </md-toolbar>
+  </div>
+  <div layout="row" flex>
+    <md-content layout="column" layout-padding>
+      <h2>Site</h2>
       <md-input-container class="md-block" flex-gt-sm>
         <label>Site</label>
         <md-select ng-model="selected_site" autofocus>
@@ -22,6 +15,51 @@
           </md-option>
         </md-select>
       </md-input-container>
-    </div>
-  </md-content>
+      <div ng-if="site_data">
+        <h2>Appliance</h2>
+        <md-input-container flex-gt-sm>
+          <label>Name</label>
+          <div layout="row" flex>
+            <div flex>
+              <input ng-model="name" placeholder="Enter a name" required>
+            </div>
+            <div>
+              <md-button class="md-icon-button" aria-label="Refresh" ng-click="generate_name()">
+                <ng-md-icon icon="cached" style="fill: #3F51B5" size="25"></ng-md-icon>
+              </md-button>
+            </div>
+          </div>
+        </md-input-container>
+        <md-input-container class="md-block" flex-gt-sm>
+          <label>Appliance</label>
+          <md-select ng-model="selected_appliance" autofocus>
+            <md-option ng-repeat="appliance in site_data.appliances track by appliance.id" value="{{appliance.id}}" required>
+              {{appliance.name}}
+            </md-option>
+          </md-select>
+        </md-input-container>
+        <md-input-container class="md-block" flex-gt-sm>
+          <label>Size</label>
+          <md-select ng-model="selected_size" autofocus>
+            <md-option ng-repeat="size in site_data.sizes track by size.id" value="{{size.id}}" required>
+              {{size.name}} ({{size.memory}} MB RAM / {{size.vcpu}} vCPU Cores)
+            </md-option>
+          </md-select>
+        </md-input-container>
+      </div>
+    </md-content>
+    <md-content layout="column" layout-padding>
+      <div ng-if="instances">
+        <h2>Instances</h2>
+        <md-list>
+          <md-list-item class="md-3-line" ng-repeat="instance in instances">
+            <ng-md-icon icon="computer" style="fill: #3F51B5" class="md-avatar" alt="{{instance.name}}" size="50"></ng-md-icon>
+            <div class="md-list-item-text" layout="column">
+              <p>({{instance.id}}) {{ instance.name }}</p>
+            </div>
+          </md-list-item>
+        </md-list>
+      </div>
+    </md-content>
+  </div>
 </div>

@@ -2,12 +2,12 @@ Rails.application.routes.draw do
   get    'home'            => 'home#index'
 
   get    'sites'           => 'sites#index'
-  get    'sites/:name'     => 'sites#show'
+  get    'sites/:id'     => 'sites#show'
 
-  get    'instances'       => 'instances#index'
-  post   'instances'       => 'instances#create'
-  get    'instances/:id'   => 'instances#show'
-  delete 'instances/:id'   => 'instances#destroy'
+  get    'instances/:site_id'       => 'instances#index'
+  post   'instances/:site_id'       => 'instances#create'
+  get    'instances/:site_id/:id'   => 'instances#show'
+  delete 'instances/:site_id/:id'   => 'instances#destroy'
 
   get    'haikunator'      => 'haikunator#show'
 
