@@ -29,6 +29,8 @@ gem 'bower-rails'
 gem 'occi-api', '~> 4.3.5'
 gem 'httparty', '~> 0.13.7'
 gem 'haikunator'
+gem 'dalli'
+gem 'kgio'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'

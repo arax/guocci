@@ -38,4 +38,6 @@ Rails.application.configure do
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
+
+  config.cache_store = :dalli_store, 'localhost:11211', { :namespace => 'guocci', :expires_in => 1.day, :compress => true }
 end

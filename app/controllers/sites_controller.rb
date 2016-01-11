@@ -7,46 +7,41 @@ class SitesController < ApplicationController
   VO_FILTER = ENV['GUOCCI_VO_FILTER'] || ''
 
   def index
-    vaproviders = HTTParty.post(
-      APPDB_PROXY_URL, { :body => APPDB_REQUEST_FORM }
-    )
+    vaproviders = (vaproviders_from_appdb || []).select { |prov| prov['in_production'] == 'true' && !prov['endpoint_url'].blank? }
+    respond_with({ error: 'Could not retrieve sites from AppDB!' }, status: 500) if vaproviders.blank?
 
-    if vaproviders.code == 200
-      vaproviders = vaproviders.parsed_response['broker']['reply']['appdb']['provider']
-      vaproviders.keep_if { |prov| prov['in_production'] == 'true' && !prov['endpoint_url'].blank? }
-
-      respond_with({
-        sites: vaproviders.collect { |prov| { id: prov['id'], name: prov['name']} }
-      })
-    else
-      respond_with({ error: 'Could not retrieve sites from AppDB!' }, status: 500)
-    end
+    respond_with({
+      sites: vaproviders.collect { |prov| { id: prov['id'], name: prov['name']} }
+    })
   end
 
   def show
-    vaproviders = HTTParty.post(
-      APPDB_PROXY_URL, { :body => APPDB_REQUEST_FORM }
-    )
+    respond_with({ error: 'Could not retrieve the site from AppDB!' }, status: 500) unless params[:id]
 
-    if vaproviders.code == 200 && !params[:id].blank?
-      vaprovider = vaproviders.parsed_response['broker']['reply']['appdb']['provider'].select { |prov| prov['id'] == params[:id] }.first
-      respond_with({ error: "Site with ID #{params[:id]} could not be found!" }, status: 404) unless vaprovider
+    vaprovider = (vaproviders_from_appdb || []).select { |prov| prov['id'] == params[:id] }.first
+    respond_with({ error: "Site with ID #{params[:id]} could not be found!" }, status: 404) unless vaprovider
 
-      site_data = {}
-      site_data[:id] = vaprovider['id']
-      site_data[:name] = vaprovider['name']
-      site_data[:country] = vaprovider['country']['isocode'] if vaprovider['country']
-      site_data[:endpoint] = vaprovider['endpoint_url']
-      site_data[:sizes] = vaprovider_sizes(vaprovider)
-      site_data[:appliances] = vaprovider_appliances(vaprovider)
+    site_data = {}
+    site_data[:id] = vaprovider['id']
+    site_data[:name] = vaprovider['name']
+    site_data[:country] = vaprovider['country']['isocode'] if vaprovider['country']
+    site_data[:endpoint] = vaprovider['endpoint_url']
+    site_data[:sizes] = vaprovider_sizes(vaprovider)
+    site_data[:appliances] = vaprovider_appliances(vaprovider)
 
-      respond_with({ site: site_data })
-    else
-      respond_with({ error: 'Could not retrieve the site from AppDB!' }, status: 500)
-    end
+    respond_with({ site: site_data })
   end
 
   private
+
+  def vaproviders_from_appdb
+    Rails.cache.fetch('guocci-appdb-sites', :expires_in => 7200) do
+      response = HTTParty.post(APPDB_PROXY_URL, { :body => APPDB_REQUEST_FORM })
+      return nil unless response.code == 200
+
+      response.parsed_response['broker']['reply']['appdb']['provider']
+    end
+  end
 
   def vaprovider_sizes(vaprovider)
     templates = [vaprovider['template']].flatten.compact
@@ -67,8 +62,11 @@ class SitesController < ApplicationController
     images.collect do |image|
       next if image['va_provider_image_id'].blank? || image['mp_uri'].blank?
 
-      appl = HTTParty.get "#{image['mp_uri'].chomp('/')}/json"
-      next unless appl.code == 200
+      appl = Rails.cache.fetch("guocci-appdb-appliance-#{Digest::SHA1.hexdigest(image['mp_uri'])}", :expires_in => 7200) do
+               response = HTTParty.get("#{image['mp_uri'].chomp('/')}/json")
+               response.code == 200 ? response.parsed_response : nil
+             end
+      next unless appl
 
       vo = vaprovider_appliances_vo(vaprovider, appl, image)
       if !VO_FILTER.blank?
@@ -77,7 +75,7 @@ class SitesController < ApplicationController
 
       {
         id: image['va_provider_image_id'],
-        name: appl.parsed_response['title'],
+        name: appl['title'],
         mpuri: image['mp_uri'],
         vo: vo,
       }

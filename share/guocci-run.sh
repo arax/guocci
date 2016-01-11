@@ -5,4 +5,5 @@
 #
 
 cd /opt/guocci
-bundle exec rails server -b 0.0.0.0
+service memcached status || service memcached start
+bundle exec rails server -b 0.0.0.0 -e production
