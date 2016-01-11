@@ -1,6 +1,11 @@
 # guocci
 A proof-of-concept GUI for (r)OCCI
 
+## Requirements
+* Ruby 2+ (and devel dependencies) installed
+* `memcached` installed and running on `localhost:11211`
+* `nodejs` installed
+
 ## Usage
 ```bash
 gem install bundler
