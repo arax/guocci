@@ -7,7 +7,7 @@ class InstancesController < ApplicationController
 
   def index
     computes = client(params[:endpoint]).describe(Occi::Infrastructure::Compute.new.kind.type_identifier)
-    computes = computes.collect { |cmpt| { id: cmpt.location, name: cmpt.title, state: cmpt.state, ip: first_address(cmpt) } }
+    computes = computes.collect { |cmpt| { id: cmpt.location, name: (cmpt.title || cmpt.hostname), state: cmpt.state, ip: first_address(cmpt) } }
     computes.compact!
 
     respond_with({ instances: computes }, status: 200, location: "/instances/#{params[:site_id]}/")
@@ -19,7 +19,9 @@ class InstancesController < ApplicationController
 
   def create
     compute = client(params[:endpoint]).get_resource(Occi::Infrastructure::Compute.new.kind.type_identifier)
-    compute.mixins << params[:size] << params[:appliance] << context_mixin
+    compute.mixins << resolve_mixin(client(params[:endpoint]), params[:size])      \
+                   << resolve_mixin(client(params[:endpoint]), params[:appliance]) \
+                   << context_mixin
     compute.title = compute.hostname = params[:name]
     compute.attributes['org.openstack.credentials.publickey.name'] = 'Public SSH key'
     compute.attributes['org.openstack.credentials.publickey.data'] = params[:sshkey].strip
@@ -67,6 +69,18 @@ class InstancesController < ApplicationController
       end
     end
     lnks.first ? lnks.first.address : 'unknown'
+  end
+
+  def resolve_mixin(client, mixin)
+    fail 'Required mixin not specified!' unless mixin
+    return mixin if mixin.is_a? Occi::Core::Mixin
+    return mixin if mixin.is_a?(String) && mixin.start_with?('http://')
+
+    type, term = mixin.split('#')
+    type = 'os_tpl' if type == 'os'
+    type = 'resource_tpl' if type == 'resource'
+
+    client.get_mixin(term, type) || fail("Specified mixin #{mixin.inspect} not declared!")
   end
 
   def context_mixin
