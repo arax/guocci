@@ -75,7 +75,7 @@ class SitesController < ApplicationController
 
       {
         id: image['va_provider_image_id'],
-        name: appl['title'],
+        name: appl['title'].gsub(/\[.+\]/, ''),
         mpuri: image['mp_uri'],
         vo: vo,
       }

@@ -1,93 +1,128 @@
-<div ng-controller="HomeController" layout="column" ng-cloak class="md-inline-form">
-  <div flex>
-  <md-toolbar md-theme="docs-dark" layout="row" layout-padding>
-    <h1>GUOCCI <span ng-if="site_data.name">@ {{site_data.name}} <span ng-if="site_data.country">({{site_data.country}})</span></span></h1>
-  </md-toolbar>
-  </div>
-  <div layout="row" flex>
-    <md-content layout="column" layout-padding>
-      <h2>Site</h2>
-      <md-input-container class="md-block" flex-gt-sm>
-        <label>Site</label>
-        <md-select ng-model="selected_site" autofocus>
-          <md-option ng-repeat="site in sites track by site.id" value="{{site.id}}" required>
-            {{site.name}}
-          </md-option>
-        </md-select>
-      </md-input-container>
-      <div ng-if="site_data">
-        <h2>Appliance</h2>
-        <md-input-container flex-gt-sm>
-          <label>Name</label>
-          <div layout="row" flex>
-            <div flex>
-              <input ng-model="name" placeholder="Enter a name" required>
-            </div>
-            <div>
-              <md-button class="md-icon-button" aria-label="Refresh" ng-click="generate_name()">
-                <ng-md-icon icon="cached" style="fill: #3F51B5" size="25"></ng-md-icon>
-              </md-button>
-            </div>
-          </div>
+<body ng-controller="HomeController" layout="row" ng-cloak>
+  <md-sidenav layout="column" class="md-sidenav-left md-whiteframe-z2" md-component-id="left" md-is-locked-open="$mdMedia('gt-md')">
+    <md-toolbar class="md-tall md-hue-2">
+      <span flex></span>
+      <div layout="column" class="md-toolbar-tools-bottom inset">
+        <user-avatar></user-avatar>
+        <span></span>
+        <div>GUOCCI</div>
+        <div><span ng-if="site_data.name">@ {{site_data.name}} <span ng-if="site_data.country">({{site_data.country}})</span></span></div>
+      </div>
+    </md-toolbar>
+    <md-list>
+    <md-item>
+      <!-- SITE -->
+      <md-item-content layout="row" layout-align="start center">
+        <md-input-container class="md-block">
+          <label>Site</label>
+          <md-select ng-model="selected_site" autofocus>
+            <md-option ng-repeat="site in sites track by site.id" value="{{site.id}}" required>
+              {{site.name}}
+            </md-option>
+          </md-select>
         </md-input-container>
-        <md-input-container flex-gt-sm>
+      </md-item-content>
+    </md-item>
+    <md-divider></md-divider>
+    <md-subheader><h2>&laquo Create an Instance &raquo</h2></md-subheader>
+    <md-item ng-if="site_data">
+      <!-- NAME -->
+      <md-item-content layout="row" layout-align="start center">
+        <md-input-container>
+          <label>Instance Name</label>
+          <input ng-model="name" placeholder="Enter a name" required>
+        </md-input-container>
+        <md-button class="md-icon-button" aria-label="Refresh" ng-click="generate_name()" style="margin-top:-20px">
+          <ng-md-icon icon="cached" style="fill: #3F51B5; margin-top:-10px" size="25"></ng-md-icon>
+        </md-button>
+      </md-item-content>
+      <!-- KEY -->
+      <md-item-content layout="row" layout-align="start center">
+        <md-input-container>
           <label>SSH Key</label>
-          <div flex>
-            <input ng-model="sshkey" placeholder="Enter a key" required>
-          </div>
+          <input ng-model="sshkey" placeholder="Enter a key" required>
         </md-input-container>
-        <md-input-container class="md-block" flex-gt-sm>
+      </md-item-content>
+      <!-- OS_TPL -->
+      <md-item-content layout="row" layout-align="start center">
+        <md-input-container class="md-block" flex>
           <label>Appliance</label>
           <md-select ng-model="selected_appliance" autofocus>
             <md-option ng-repeat="appliance in site_data.appliances track by appliance.id" value="{{appliance.id}}" required>
-              {{appliance.name}} (<strong>{{appliance.vo}}</strong>)
+              Name: <strong>{{appliance.name}}</strong> <br/> VO: <strong>{{appliance.vo}}</strong>
             </md-option>
           </md-select>
         </md-input-container>
-        <md-input-container class="md-block" flex-gt-sm>
+      </md-item-content>
+      <!-- RESOURCE_TPL -->
+      <md-item-content layout="row" layout-align="start center">
+        <md-input-container class="md-block" flex>
           <label>Size</label>
           <md-select ng-model="selected_size" autofocus>
             <md-option ng-repeat="size in site_data.sizes track by size.id" value="{{size.id}}" required>
-              {{size.name}} ({{size.memory}} MB RAM / {{size.vcpu}} vCPU Cores)
+              Name: <strong>{{size.name}}</strong> <br/>
+              <strong>{{size.memory}}</strong> MB RAM / <strong>{{size.vcpu}}</strong> vCPU
             </md-option>
           </md-select>
         </md-input-container>
-        <div ng-if="selected_appliance && selected_size && sshkey && name">
-          <md-input-container flex-gt-sm>
-            <md-button class="md-raised md-primary" ng-click="create_instance(name, site_data.id, site_data.endpoint, selected_appliance, selected_size, sshkey);refresh_instances(site_data);generate_name()">Create</md-button>
-          </md-input-container>
-        </div>
+      </md-item-content>
+      <!-- SUBMIT BUTTON -->
+      <md-item-content layout="row" layout-align="start center" ng-if="selected_appliance && selected_size && sshkey && name">
+        <md-input-container>
+          <md-button class="md-raised md-primary" ng-click="create_instance(name, site_data.id, site_data.endpoint, selected_appliance, selected_size, sshkey);refresh_instances(site_data);generate_name()">Create</md-button>
+        </md-input-container>
+      </md-item-content>
+    </md-item>
+  </md-list>
+  </md-sidenav>
+  <div layout="column" class="relative" layout-fill role="main">
+    <md-toolbar ng-show="!showSearch">
+      <div class="md-toolbar-tools">
+        <h3>Dashboard</h3>
+        <span flex></span>
       </div>
-    </md-content>
-    <md-content layout="column" layout-padding>
-      <div ng-if="instances">
-        <div layout="row">
-          <h2>Instances</h2>
-          <div>
-            <md-button class="md-icon-button" aria-label="Refresh" ng-click="refresh_instances(site_data)">
-              <ng-md-icon icon="cached" style="fill: #3F51B5" size="25"></ng-md-icon>
-            </md-button>
-          </div>
+    </md-toolbar>
+    <md-content flex md-scroll-y>
+      <ui-view layout="column" layout-fill layout-padding>
+        <div class="inset" hide-sm></div>
+        <div role="tabpanel"
+             id="tab1-content"
+             aria-labelledby="tab1"
+             layout="row" layout-align="center center">
+            <md-card flex-gt-sm="90" flex-gt-md="80">
+              <md-card-content>
+                <h2>
+                  Instances
+                  <md-button class="md-icon-button" aria-label="Refresh" ng-click="refresh_instances(site_data)">
+                    <ng-md-icon icon="cached" style="fill: #3F51B5" size="25"></ng-md-icon>
+                  </md-button>
+                </h2>
+                <md-list>
+                  <md-item ng-repeat="instance in instances">
+                    <md-item-content layout="row">
+                      <div class="md-tile-left inset" hide-sm>
+                          <ng-md-icon icon="computer" style="fill: #3F51B5" alt="{{instance.name}}" size="100"></ng-md-icon>
+                      </div>
+                      <div class="md-tile-content" style="margin-left: 100px" flex>
+                        <h3>Name: {{instance.name}}</h3>
+                        <h4>IP Address: {{instance.ip}}<h4>
+                        <h5>State: {{instance.state}}</h5>
+                      </div>
+                      <div ng-if="instance.state == 'active'">
+                        <md-input-container>
+                          <md-button class="md-raised md-primary" ng-click="delete_instance(instance.id, site_data.id, site_data.endpoint);refresh_instances(site_data)">Delete</md-button>
+                        </md-input-container>
+                      </div>
+                    </md-item-content>
+                    <md-divider md-inset hide-sm ng-if="!$last"></md-divider>
+                    <md-divider hide-gt-sm ng-if="!$last"></md-divider>
+                  </md-item>
+                  <md-divider></md-divider>
+                </md-list>
+              </md-card-content>
+            </md-card>
         </div>
-        <md-list>
-          <md-list-item class="md-3-line" ng-repeat="instance in instances">
-            <ng-md-icon icon="computer" style="fill: #3F51B5" class="md-avatar" alt="{{instance.name}}" size="50"></ng-md-icon>
-            <div class="md-list-item-text" layout="row">
-              <div layout="column" flex>
-                <div flex>Name:    "{{ instance.name }}"</div>
-                <!-- <div flex>ID:      {{site_data.endpoint + instance.id}}</div> -->
-                <div flex>State:   {{instance.state}}</div>
-                <div flex>Address: {{instance.ip}}</div>
-              </div>
-              <div ng-if="instance.state == 'active'">
-                <md-input-container>
-                  <md-button class="md-raised md-primary" ng-click="delete_instance(instance.id, site_data.id, site_data.endpoint);refresh_instances(site_data)">Delete</md-button>
-                </md-input-container>
-              </div>
-            </div>
-          </md-list-item>
-        </md-list>
-      </div>
+      </ui-view>
     </md-content>
   </div>
-</div>
+</body>
