@@ -66,6 +66,14 @@ guocci.controller(
             $scope.error_message = 'Failed to refresh the list of instances'
         )
 
+      $scope.get_proxy_info = -> $http.get('/proxy.json').then(
+        (response) -> $scope.proxy_info = response.data,
+        (response) ->
+          $log.error(response)
+          $scope.error_message = 'Failed to get proxy information'
+      )
+      $scope.get_proxy_info()
+
       $scope.$watch(
         'selected_site',
         (newSite, oldSite) ->

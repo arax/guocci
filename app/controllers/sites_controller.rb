@@ -4,8 +4,6 @@ class SitesController < ApplicationController
   APPDB_PROXY_URL = 'https://appdb.egi.eu/api/proxy'
   APPDB_REQUEST_FORM = 'version=1.0&resource=broker&data=%3Cappdb%3Abroker%20xmlns%3Axs%3D%22http%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%22%20xmlns%3Axsi%3D%22http%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema-instance%22%20xmlns%3Aappdb%3D%22http%3A%2F%2Fappdb.egi.eu%2Fapi%2F1.0%2Fappdb%22%3E%3Cappdb%3Arequest%20id%3D%22vaproviders%22%20method%3D%22GET%22%20resource%3D%22va_providers%22%3E%3Cappdb%3Aparam%20name%3D%22listmode%22%3Edetails%3C%2Fappdb%3Aparam%3E%3C%2Fappdb%3Arequest%3E%3C%2Fappdb%3Abroker%3E'
 
-  VO_FILTER = ENV['GUOCCI_VO_FILTER'] || ''
-
   def index
     vaproviders = (vaproviders_from_appdb || []).select { |prov| prov['in_production'] == 'true' && !prov['endpoint_url'].blank? }
     respond_with({ error: 'Could not retrieve sites from AppDB!' }, status: 500) if vaproviders.blank?
@@ -69,9 +67,7 @@ class SitesController < ApplicationController
       next unless appl
 
       vo = vaprovider_appliances_vo(vaprovider, appl, image)
-      if !VO_FILTER.blank?
-        next if vo.strip != VO_FILTER.strip
-      end
+      next if vo.strip != ProxyController.proxy_info[:vo]
 
       {
         id: image['va_provider_image_id'],
