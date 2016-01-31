@@ -63,7 +63,7 @@ class InstancesController < ApplicationController
         :voms               => true
       },
       :log => {
-        :level  => Occi::Api::Log::DEBUG,
+        :level  => Rails.env.production? ? Occi::Api::Log::ERROR : Occi::Api::Log::DEBUG,
         :logger => Rails.logger,
         :out => Rails.logger,
       }
