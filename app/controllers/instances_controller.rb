@@ -36,6 +36,16 @@ class InstancesController < ApplicationController
     respond_with({ status: 'success' }, status: 200, location: "/instances/#{params[:site_id]}/delete")
   end
 
+  class << self
+    def voms_proxy_path
+      VOMS_PROXY_PATH.strip
+    end
+
+    def ca_path
+      CA_PATH.strip
+    end
+  end
+
   private
 
   def validate_params
@@ -47,9 +57,9 @@ class InstancesController < ApplicationController
       :endpoint => endpoint,
       :auth => {
         :type               => "x509",
-        :user_cert          => VOMS_PROXY_PATH,
+        :user_cert          => self.class.voms_proxy_path,
         :user_cert_password => nil,
-        :ca_path            => CA_PATH,
+        :ca_path            => self.class.ca_path,
         :voms               => true
       },
       :log => {
