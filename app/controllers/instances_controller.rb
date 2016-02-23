@@ -38,11 +38,19 @@ class InstancesController < ApplicationController
 
   class << self
     def voms_proxy_path
-      VOMS_PROXY_PATH.strip
+      remote_proxy || VOMS_PROXY_PATH.strip
     end
 
     def ca_path
       CA_PATH.strip
+    end
+
+    def remote_proxy
+      return nil if ENV['REMOTE_USER'].blank?
+      path = "/tmp/x509_#{ENV['REMOTE_USER']}"
+      return nil unless File.readable?(path)
+
+      path
     end
   end
 
