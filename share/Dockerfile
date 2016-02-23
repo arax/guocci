@@ -10,6 +10,10 @@ RUN echo "alias voms-proxy-info='voms-proxy-info -file /tmp/x509up_u1000'" >> /r
 RUN echo "alias voms-proxy-init='voms-proxy-init -out /tmp/x509up_u1000'" >> /root/.bashrc
 RUN echo "alias voms-proxy-destroy='voms-proxy-destroy -file /tmp/x509up_u1000'" >> /root/.bashrc
 
+# Fixing voms-clients
+RUN rm /var/lib/voms-clients3/lib/*
+ADD libs/* /var/lib/voms-clients3/lib/
+
 # GUOCCI stuff
 ADD guocci-setup.sh /tmp/guocci-setup.sh
 RUN /tmp/guocci-setup.sh
