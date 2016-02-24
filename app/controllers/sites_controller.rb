@@ -32,6 +32,8 @@ class SitesController < ApplicationController
 
   private
 
+  include VomsProxyFile
+
   def vaproviders_from_appdb
     Rails.cache.fetch('guocci-appdb-sites', :expires_in => 7200) do
       response = HTTParty.post(APPDB_PROXY_URL, { :body => APPDB_REQUEST_FORM })
@@ -67,7 +69,7 @@ class SitesController < ApplicationController
       next unless appl
 
       vo = vaprovider_appliances_vo(vaprovider, appl, image)
-      next if vo.strip != ProxyController.proxy_info[:vo]
+      next if vo.strip != ProxyController.proxy_info(voms_proxy_path)[:vo]
 
       {
         id: image['va_provider_image_id'],

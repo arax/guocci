@@ -38,23 +38,17 @@ class InstancesController < ApplicationController
 
   class << self
     def voms_proxy_path
-      remote_proxy || VOMS_PROXY_PATH.strip
+      VOMS_PROXY_PATH.strip
     end
 
     def ca_path
       CA_PATH.strip
     end
-
-    def remote_proxy
-      return nil if ENV['REMOTE_USER'].blank?
-      path = "/tmp/x509_#{ENV['REMOTE_USER']}"
-      return nil unless File.readable?(path)
-
-      path
-    end
   end
 
   private
+
+  include VomsProxyFile
 
   def validate_params
     respond_with({ error: 'Site ID not provided!' }, status: 400) if params[:site_id].blank?
@@ -65,7 +59,7 @@ class InstancesController < ApplicationController
       :endpoint => endpoint,
       :auth => {
         :type               => "x509",
-        :user_cert          => self.class.voms_proxy_path,
+        :user_cert          => voms_proxy_path,
         :user_cert_password => nil,
         :ca_path            => self.class.ca_path,
         :voms               => true

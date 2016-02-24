@@ -1,10 +1,10 @@
 class ProxyController < ApplicationController
   respond_to :json
 
-  VOMS_PROXY_BIN = "voms-proxy-info --file #{InstancesController.voms_proxy_path}"
+  VOMS_PROXY_BIN = File.executable?('/usr/bin/voms-proxy-info') ? '/usr/bin/voms-proxy-info' : 'voms-proxy-info'
 
   def show
-    respond_with(self.class.proxy_info, status: 200)
+    respond_with(self.class.proxy_info(voms_proxy_path), status: 200)
   end
 
   class << self
@@ -14,16 +14,16 @@ class ProxyController < ApplicationController
       VOMS_PROXY_BIN.strip
     end
 
-    def proxy_info
+    def proxy_info(proxy_file)
       proxy_info_h = {}
 
-      proxy_info_h[:identity] = `#{voms_proxy_bin} --identity`.strip
+      proxy_info_h[:identity] = `#{voms_proxy_bin} --file #{proxy_file} --identity`.strip
       fail 'Failed to get proxy identity!' unless $?.to_i == 0
 
-      proxy_info_h[:vo] = `#{voms_proxy_bin} --vo`.strip
+      proxy_info_h[:vo] = `#{voms_proxy_bin} --file #{proxy_file} --vo`.strip
       fail 'Failed to get proxy VO!' unless $?.to_i == 0
 
-      proxy_info_h[:timeleft] = `#{voms_proxy_bin} --timeleft`.strip
+      proxy_info_h[:timeleft] = `#{voms_proxy_bin} --file #{proxy_file} --timeleft`.strip
       fail 'Failed to get proxy expiration time!' unless $?.to_i == 0
       proxy_info_h[:timeleft] = time_ago_in_words(Time.now + proxy_info_h[:timeleft].to_i)
 
@@ -32,4 +32,8 @@ class ProxyController < ApplicationController
       proxy_info_h
     end
   end
+
+  private
+
+  include VomsProxyFile
 end
