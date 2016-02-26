@@ -69,7 +69,7 @@ class SitesController < ApplicationController
       next unless appl
 
       vo = vaprovider_appliances_vo(vaprovider, appl, image)
-      next if vo.strip != ProxyController.proxy_info(voms_proxy_path)[:vo]
+      next if vo.strip != proxy_vo
 
       {
         id: image['va_provider_image_id'],
@@ -94,8 +94,6 @@ class SitesController < ApplicationController
     'unknown'
   end
 
-  private
-
   def cache_fetch(key, expiration = 1.hour)
     fail 'You have to provide a block!' unless block_given?
     FileUtils.mkdir_p CACHE_DIR
@@ -114,5 +112,9 @@ class SitesController < ApplicationController
 
   def cache_valid?(filename, expiration)
     File.exists?(filename) && ((Time.now - expiration) < File.stat(filename).mtime)
+  end
+
+  def proxy_vo
+    @proxy_vo ||= ProxyController.proxy_info(voms_proxy_path)[:vo]
   end
 end
