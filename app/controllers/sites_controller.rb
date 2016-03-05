@@ -9,6 +9,7 @@ class SitesController < ApplicationController
     vaproviders = vaproviders_from_appdb.select { |prov| prov['in_production'] == 'true' && !prov['endpoint_url'].blank? }
     respond_with({ error: 'Could not retrieve sites from AppDB!' }, status: 500) if vaproviders.blank?
 
+    vaproviders.reject! { |prov| vaprovider_appliances(prov).blank? }
     respond_with({
       sites: vaproviders.collect { |prov| { id: prov['id'], name: prov['name']} }
     })
