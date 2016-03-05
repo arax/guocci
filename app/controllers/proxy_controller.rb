@@ -27,7 +27,7 @@ class ProxyController < ApplicationController
       proxy_info_h[:timeleft] = `#{voms_proxy_bin} --file #{proxy_file} --timeleft`.strip
       fail 'Failed to get proxy expiration time!' unless $?.to_i == 0
       proxy_info_h[:timeleft] = if proxy_info_h[:timeleft].to_i == 0
-                                  "expired"
+                                  "no time"
                                 else
                                   time_ago_in_words(Time.now + proxy_info_h[:timeleft].to_i)
                                 end
