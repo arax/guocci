@@ -5,10 +5,7 @@ module VomsProxyFile
   end
 
   def remote_proxy
-    return nil if remote_user_candid.blank?
-    path = "/tmp/x509_#{remote_user_candid}"
-    return nil unless File.readable?(path)
-    path
+    remote_user_candid.blank? ? nil : "/tmp/x509_#{remote_user_candid}"
   end
 
   def remote_user_candid
