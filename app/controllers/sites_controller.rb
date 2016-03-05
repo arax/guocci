@@ -101,17 +101,25 @@ class SitesController < ApplicationController
 
     if cache_valid?(filename, expiration)
       Rails.logger.debug "Cache hit on #{key.inspect}"
-      File.open(filename, 'r') { |file| JSON.parse file.read }
+      File.open(filename, 'r') { |file|
+        file.flock(File::LOCK_SH)
+        JSON.parse file.read
+      }
     else
       Rails.logger.debug "Cache miss on #{key.inspect}"
       data = yield
-      File.open(filename, 'w') { |file| file.write JSON.pretty_generate(data) }
+      File.open(filename, File::RDWR|File::CREAT, 0644) { |file|
+        file.flock(File::LOCK_EX)
+        file.write JSON.pretty_generate(data)
+        file.flush
+        file.truncate(file.pos)
+      } unless data.blank?
       data
     end
   end
 
   def cache_valid?(filename, expiration)
-    File.exists?(filename) && ((Time.now - expiration) < File.stat(filename).mtime)
+    File.exists?(filename) && !File.zero?(filename) && ((Time.now - expiration) < File.stat(filename).mtime)
   end
 
   def proxy_vo
