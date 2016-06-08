@@ -16,7 +16,10 @@ module VomsProxyFile
   def remote_user_candid
     Rails.logger.info "Remote user: #{ENV['REMOTE_USER'].inspect}"
     Rails.logger.info "Proxy user: #{request.headers['HTTP_PROXY_USER'].inspect}"
-    data = OpenSSL::Digest::SHA256.new.digest(ENV['REMOTE_USER'] || request.headers['HTTP_PROXY_USER'])
+    user = ENV['REMOTE_USER'] || request.headers['HTTP_PROXY_USER']
+    return if user.blank?
+
+    data = OpenSSL::Digest::SHA256.new.digest(user)
     Base64.encode64(data).slice(0, 16)
   end
 end
