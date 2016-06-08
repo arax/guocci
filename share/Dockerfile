@@ -4,7 +4,6 @@ MAINTAINER Boris Parak <parak@cesnet.cz>
 
 # FedCloud stuff
 ADD fedcloud-ui.sh /tmp/fedcloud-ui.sh
-RUN "apt-get -q -y install curl"
 RUN /tmp/fedcloud-ui.sh
 RUN echo "alias occi='occi --auth x509 --user-cred /tmp/x509up_u1000 --voms'" >> /root/.bashrc
 RUN echo "alias voms-proxy-info='voms-proxy-info -file /tmp/x509up_u1000'" >> /root/.bashrc
