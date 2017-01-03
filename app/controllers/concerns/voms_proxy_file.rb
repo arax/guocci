@@ -9,7 +9,7 @@ module VomsProxyFile
   end
 
   def session_proxy
-    session_proxy_file = "/tmp/x509_#{session.id}"
+    session_proxy_file = "/tmp/x509_#{cookies[:session_id]}"
     File.readable?(session_proxy_file) ? session_proxy_file : nil
   end
 end
