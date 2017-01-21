@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.2.5'
+gem 'rails', '4.2.7.1'
 # Use sqlite3 as the database for Active Record
 gem 'sqlite3'
 # Use SCSS for stylesheets
@@ -26,7 +26,7 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'bower-rails'
 
 # App dependencies
-gem 'occi-api', '~> 4.3.5'
+gem 'occi-api', '~> 4.3.6'
 gem 'httparty', '~> 0.13.7'
 gem 'haikunator'
 gem 'dalli'
