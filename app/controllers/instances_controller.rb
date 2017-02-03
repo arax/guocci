@@ -23,7 +23,6 @@ class InstancesController < ApplicationController
                    << resolve_mixin(client(params[:endpoint]), params[:appliance]) \
                    << context_mixin
     compute.title = compute.hostname = params[:name]
-    compute.attributes['org.openstack.credentials.publickey.name'] = 'Public SSH key'
     compute.attributes['org.openstack.credentials.publickey.data'] = params[:sshkey].strip
 
     compute_id = client(params[:endpoint]).create compute
@@ -65,7 +64,7 @@ class InstancesController < ApplicationController
         :voms               => true
       },
       :log => {
-        :level  => Rails.env.production? ? Occi::Api::Log::ERROR : Occi::Api::Log::DEBUG,
+        :level  => Occi::Api::Log::DEBUG,
         :logger => Rails.logger,
         :out => Rails.logger,
       }
@@ -75,9 +74,9 @@ class InstancesController < ApplicationController
   def first_address(compute)
     lnks = compute.links.select do |lnk|
       if lnk.kind.is_a? String
-        lnk.kind == Occi::Infrastructure::Networkinterface.new.kind.type_identifier
+        lnk.kind == Occi::Infrastructure::Networkinterface.type_identifier
       else
-        lnk.kind.type_identifier == Occi::Infrastructure::Networkinterface.new.kind.type_identifier
+        lnk.kind.type_identifier == Occi::Infrastructure::Networkinterface.type_identifier
       end
     end
     lnks.first ? lnks.first.address : 'unknown'
