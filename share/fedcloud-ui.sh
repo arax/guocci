@@ -101,6 +101,7 @@ install_debian() {
     apt-get -qq update
     echo "Installing ca-policy-egi-core, fetch-crl, voms-clients3 and occi-cli"
     apt-get -y -qq install ca-policy-egi-core fetch-crl occi-cli voms-clients3
+    apt-get -y -qq dist-upgrade
 
     # this is required to make voms-clients3 work
     [ -e /var/lib/voms-clients3/lib/commons-io.jar ] || \
