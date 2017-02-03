@@ -28,6 +28,7 @@ gem 'bower-rails'
 # App dependencies
 gem 'occi-api', '~> 4.3.6'
 gem 'httparty', '~> 0.13.7'
+gem 'nokogiri', '>= 1.6', '< 1.7'
 gem 'haikunator'
 gem 'dalli'
 gem 'kgio'
