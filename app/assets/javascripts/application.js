@@ -13,6 +13,7 @@
 //= require jquery
 //= require jquery_ujs
 //= require angular/angular
+//= require angular-sanitize/angular-sanitize
 //= require angular-aria/angular-aria
 //= require angular-animate/angular-animate
 //= require angular-messages/angular-messages

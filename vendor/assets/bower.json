@@ -1,8 +1,9 @@
 {
-  "name": "dsl-generated dependencies",
+  "name": "dsl-generated-dependencies",
   "dependencies": {
-    "angular": "latest",
-    "angular-material": "latest",
-    "angular-material-icons": "latest"
+    "angular": "1.4.8",
+    "angular-sanitize": "1.4.8",
+    "angular-material": "1.0.1",
+    "angular-material-icons": "0.6.0"
   }
 }

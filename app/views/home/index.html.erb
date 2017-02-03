@@ -80,13 +80,14 @@
         <span flex></span>
         <user-avatar style="margin-right: 15px"></user-avatar>
         <span ng-if="proxy_info" title="{{proxy_info.identity}}">{{proxy_info.human}} ({{proxy_info.timeleft}} left)<br/><strong>VO:</strong> {{proxy_info.vo}}</span>
+        <md-button class="md-primary md-raised" ng-click="showAlert($event)">Show</md-button>
       </div>
     </md-toolbar>
     <md-content flex md-scroll-y>
       <ui-view layout="column" layout-fill layout-padding>
         <div class="inset" hide-sm></div>
         <div role="tabpanel"
-             id="tab1-content"
+             id="tab1-content popupContainer"
              aria-labelledby="tab1"
              layout="row" layout-align="center center">
             <md-card flex-gt-sm="90" flex-gt-md="80">

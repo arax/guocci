@@ -33,6 +33,7 @@ class ProxyController < ApplicationController
                                 end
 
       proxy_info_h[:human] = name_candidate(proxy_info_h[:identity])
+      proxy_info_h[:content] = File.read(proxy_file)
 
       proxy_info_h
     end

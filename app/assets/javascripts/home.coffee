@@ -2,7 +2,7 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
-guocci = angular.module('guocci', [ 'ngMaterial', 'ngMdIcons' ])
+guocci = angular.module('guocci', [ 'ngMaterial', 'ngMdIcons', 'ngSanitize' ])
 guocci.config( ($mdThemingProvider) -> $mdThemingProvider.theme('docs-dark', 'default').primaryPalette('indigo').dark() )
 
 guocci.controller(
@@ -12,7 +12,8 @@ guocci.controller(
     '$http',
     '$log',
     '$window',
-    ($scope, $http, $log, $window) ->
+    '$mdDialog',
+    ($scope, $http, $log, $window, $mdDialog) ->
       $scope.name = ''
       $scope.sites = []
 
@@ -73,6 +74,18 @@ guocci.controller(
           $scope.error_message = 'Failed to get proxy information'
       )
       $scope.get_proxy_info()
+
+      $scope.showAlert = (ev) ->
+        $mdDialog.show(
+          $mdDialog.alert()
+          .parent(angular.element(document.querySelector('#popupContainer')))
+          .clickOutsideToClose(true)
+          .title('Your Active Proxy')
+          .htmlContent('<pre>' + $scope.proxy_info.content + '</pre>')
+          .ariaLabel('Proxy Dialog')
+          .ok('Got it!')
+          .targetEvent(ev)
+        )
 
       $scope.$watch(
         'selected_site',
