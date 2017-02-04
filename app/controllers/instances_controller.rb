@@ -7,7 +7,7 @@ class InstancesController < ApplicationController
 
   def index
     computes = client(params[:endpoint]).describe(Occi::Infrastructure::Compute.new.kind.type_identifier)
-    computes = computes.collect { |cmpt| { id: cmpt.location, name: (cmpt.title || cmpt.hostname), state: cmpt.state, ip: first_address(cmpt) } }
+    computes = computes.collect { |cmpt| { id: cmpt.location, name: (cmpt.title || cmpt.hostname), state: cmpt.state, ip: all_addresses(cmpt) } }
     computes.compact!
 
     respond_with({ instances: computes }, status: 200, location: "/instances/#{params[:site_id]}/")
@@ -71,15 +71,11 @@ class InstancesController < ApplicationController
     })
   end
 
-  def first_address(compute)
-    lnks = compute.links.select do |lnk|
-      if lnk.kind.is_a? String
-        lnk.kind == Occi::Infrastructure::Networkinterface.type_identifier
-      else
-        lnk.kind.type_identifier == Occi::Infrastructure::Networkinterface.type_identifier
-      end
-    end
-    lnks.first ? lnks.first.address : 'unknown'
+  def all_addresses(compute)
+    lnks = compute.links
+           .select { |lnk| lnk.attributes['occi.networkinterface'] }
+           .collect { |lnk| lnk.attributes['occi.networkinterface.address'] }.compact
+    lnks.empty? ? 'unknown' : lnks.join(', ')
   end
 
   def resolve_mixin(client, mixin)
