@@ -91,6 +91,7 @@ guocci.controller(
         'selected_site',
         (newSite, oldSite) ->
           return if !newSite
+          $scope.instances = []
           $http.get('/sites/' + newSite + '.json').then(
             (response) -> $scope.site_data = response.data.site,
             (response) ->
