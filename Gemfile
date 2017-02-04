@@ -26,8 +26,8 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'bower-rails'
 
 # App dependencies
-gem 'occi-api', '~> 4.3.6'
-gem 'httparty', '~> 0.13.7'
+gem 'occi-api', '>= 4.3.9', '< 5'
+gem 'httparty', '>= 0.13.7', '< 0.14'
 gem 'nokogiri', '>= 1.6', '< 1.7'
 gem 'haikunator'
 gem 'dalli'

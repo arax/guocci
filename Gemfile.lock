@@ -85,10 +85,10 @@ GEM
     multi_xml (0.6.0)
     nokogiri (1.6.8.1)
       mini_portile2 (~> 2.1.0)
-    occi-api (4.3.8)
+    occi-api (4.3.9)
       httparty (>= 0.13.1, < 1)
       json (>= 1.8.1, < 3)
-      occi-core (>= 4.3.2, < 5)
+      occi-core (>= 4.3.5, < 5)
     occi-core (4.3.5)
       activesupport (>= 4.0.0, < 6)
       hashie (>= 3.3.1, < 3.5)
@@ -172,12 +172,12 @@ DEPENDENCIES
   coffee-rails (~> 4.1.0)
   dalli
   haikunator
-  httparty (~> 0.13.7)
+  httparty (>= 0.13.7, < 0.14)
   jbuilder (~> 2.0)
   jquery-rails
   kgio
   nokogiri (>= 1.6, < 1.7)
-  occi-api (~> 4.3.6)
+  occi-api (>= 4.3.9, < 5)
   pry
   rails (= 4.2.7.1)
   responders (~> 2.0)
