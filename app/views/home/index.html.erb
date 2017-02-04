@@ -111,7 +111,7 @@
                       </div>
                       <div ng-if="instance.state == 'active'">
                         <md-input-container>
-                          <md-button class="md-raised md-primary" ng-click="delete_instance(instance.id, site_data.id, site_data.endpoint);refresh_instances(site_data)">Delete</md-button>
+                          <md-button style="background-color: red;" class="md-raised md-primary" ng-click="delete_instance(instance.id, site_data.id, site_data.endpoint);refresh_instances(site_data)">Delete</md-button>
                         </md-input-container>
                       </div>
                     </md-item-content>
